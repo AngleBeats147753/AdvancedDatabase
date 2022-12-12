@@ -2,6 +2,8 @@ package com.example.backend.controller;
 
 import com.example.backend.pojo.dto.ReturnResult;
 import com.example.backend.pojo.query.GetFlightRecordsQuery;
+import com.example.backend.service.RecordsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 public class RecordsController {
+    @Autowired
+    private RecordsService recordsService;
+
     @GetMapping("/flight/records")
     public ReturnResult getFlightRecords(@Validated GetFlightRecordsQuery query, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ReturnResult.getFailureReturn(bindingResult);
         }
-        return null;
+        return recordsService.getFlightRecords(query);
     }
 
 }

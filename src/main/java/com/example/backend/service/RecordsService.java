@@ -1,11 +1,10 @@
 package com.example.backend.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.backend.manager.AirportManager;
-import com.example.backend.manager.CityManager;
-import com.example.backend.manager.RecordsManager;
-import com.example.backend.manager.StateManager;
+import com.example.backend.manager.*;
 import com.example.backend.pojo.*;
+import com.example.backend.pojo.dto.PageDTO;
 import com.example.backend.pojo.dto.ReturnResult;
 import com.example.backend.pojo.query.GetFlightRecordsQuery;
 import lombok.extern.slf4j.Slf4j;
@@ -31,24 +30,35 @@ public class RecordsService {
     @Autowired
     private AirportManager airportManager;
     @Autowired
+    private AirlineManager airlineManager;
+    @Autowired
     private RecordsManager recordsManager;
 
     public ReturnResult getFlightRecords(GetFlightRecordsQuery query) {
-//        List<Long> cityDOList = null;
-//        List<Long> depAirportList = null;
-//        List<Long> arrAirportList = null;
-//        if (query.getDepCityId() != null) {
-//            arrAirportList = airportManager.list(new QueryWrapper<AirportDO>().eq(AirportDO.CITY_ID, query.getDepCityId())).stream().map(AirportDO::getId).collect(Collectors.toList());
-//        }
+        List<Long> depAirportList = null;
+        List<Long> arrAirportList = null;
+        if (query.getDepCityId() != null) {
+            depAirportList = airportManager.list(new QueryWrapper<AirportDO>().eq(AirportDO.CITY_ID, query.getDepCityId())).stream().map(AirportDO::getId).collect(Collectors.toList());
+        } else if (query.getDepStateId() != null) {
+            List<Long> cityList = cityManager.list(new QueryWrapper<CityDO>().eq(CityDO.STATE_ID, query.getDepStateId())).stream().map(CityDO::getId).collect(Collectors.toList());
+            depAirportList = airportManager.list(new QueryWrapper<AirportDO>().in(AirportDO.CITY_ID, cityList)).stream().map(AirportDO::getId).collect(Collectors.toList());
+        }
 
+        if (query.getArrCityId() != null) {
+            arrAirportList = airportManager.list(new QueryWrapper<AirportDO>().eq(AirportDO.CITY_ID, query.getArrCityId())).stream().map(AirportDO::getId).collect(Collectors.toList());
+        } else if (query.getArrStateId() != null) {
+            List<Long> cityList = cityManager.list(new QueryWrapper<CityDO>().eq(CityDO.STATE_ID, query.getArrStateId())).stream().map(CityDO::getId).collect(Collectors.toList());
+            arrAirportList = airportManager.list(new QueryWrapper<AirportDO>().in(AirportDO.CITY_ID, cityList)).stream().map(AirportDO::getId).collect(Collectors.toList());
+        }
 
-//        new QueryWrapper<RecordsDO>()
-//        recordsManager.list()
-        List<RecordsDO> list = recordsManager.list(new QueryWrapper<RecordsDO>().
-                eq(RecordsDO.AIRLINE_ID, 1));
+        PageDTO<RecordsDO> page = recordsManager.page(new PageDTO<>(query.getCurrentPage(), query.getPageSize()), new QueryWrapper<RecordsDO>()
+                .eq(query.getAirlineId() != null, RecordsDO.AIRLINE_ID, query.getAirlineId())
+                .eq(query.getFlightDate() != null, RecordsDO.FLIGHT_DATE, query.getFlightDate())
+                .in(depAirportList != null, RecordsDO.ORIGIN_AIRPORT_ID, depAirportList)
+                .in(arrAirportList != null, RecordsDO.DEST_AIRPORT_ID, arrAirportList)
+        );
 
-        System.out.println(list.size());
-        return null;
+        return ReturnResult.getSuccessReturn(page);
     }
 
     public ReturnResult getPunctuality(String flightNum) {

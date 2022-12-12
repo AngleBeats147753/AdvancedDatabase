@@ -1,6 +1,0 @@
-spring:
-  datasource:
-    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-    url: jdbc:p6spy:mysql://124.222.178.26:3306/group10
-    username: root
-    password: 12345678

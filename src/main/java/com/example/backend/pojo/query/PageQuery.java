@@ -1,6 +1,9 @@
 package com.example.backend.pojo.query;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 黄磊
@@ -8,6 +11,10 @@ import lombok.Data;
  **/
 @Data
 public class PageQuery {
-    private Integer currentPage;
-    private Integer pageSize;
+    @NotNull
+    @Range(min = 1,max = 100)
+    private Integer currentPage=1;
+    @NotNull
+    @Range(min = 1,max = 100)
+    private Integer pageSize=20;
 }
