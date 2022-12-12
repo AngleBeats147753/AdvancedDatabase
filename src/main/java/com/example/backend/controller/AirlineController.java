@@ -1,6 +1,9 @@
 package com.example.backend.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.example.backend.pojo.dto.ReturnResult;
+import com.example.backend.service.AirlineService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,7 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-12-12
  */
 @RestController
-@RequestMapping("/airlineDO")
 public class AirlineController {
 
+    @Autowired
+    private AirlineService airlineService;
+
+    @GetMapping("/airlines")
+    public ReturnResult airlines() {
+        return airlineService.listAirline();
+    }
 }

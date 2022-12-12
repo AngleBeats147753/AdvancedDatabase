@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface AirlineManager extends IService<AirlineDO> {
 
+    AirlineDO getByAirlineCode(String code);
 }

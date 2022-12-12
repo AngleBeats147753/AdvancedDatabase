@@ -1,5 +1,6 @@
 package com.example.backend.manager.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.backend.pojo.AirlineDO;
 import com.example.backend.dao.AirlineDao;
 import com.example.backend.manager.AirlineManager;
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AirlineManagerImp extends ServiceImpl<AirlineDao, AirlineDO> implements AirlineManager {
 
+
+    @Override
+    public AirlineDO getByAirlineCode(String code){
+        QueryWrapper<AirlineDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(AirlineDO.OPERATING_AIRLINE,code);
+        return getOne(queryWrapper);
+    }
 }

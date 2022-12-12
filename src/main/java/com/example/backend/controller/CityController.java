@@ -1,6 +1,10 @@
 package com.example.backend.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.example.backend.pojo.dto.ReturnResult;
+import com.example.backend.service.CityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,7 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-12-12
  */
 @RestController
-@RequestMapping("/cityDO")
 public class CityController {
 
+    @Autowired
+    private CityService cityService;
+
+    @GetMapping("/city/{stateId}")
+    public ReturnResult listByStateId(@PathVariable Long stateId) {
+        return cityService.listCityByState(stateId);
+    }
 }
