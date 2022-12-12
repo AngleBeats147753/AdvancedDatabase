@@ -74,8 +74,8 @@ public class RecordsService {
             //查询总的准点率
             float punctualityRate = recordsManager.getFlightPunctualityRate(airlineId, flightNumber);
             //查询每个月的飞行总次数/准点次数
-
-
+            result.setPunctualityRate(punctualityRate);
+            result.setFlyNumList(recordsManager.listFlyNum(airlineId, flightNumber));
         } catch (NumberFormatException e) {
             log.error("[getPunctuality()] exception = ", e);
             return ReturnResult.getFailureReturn("输入的航班号有误");

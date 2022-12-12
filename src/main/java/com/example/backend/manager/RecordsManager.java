@@ -1,6 +1,5 @@
 package com.example.backend.manager;
 
-import com.example.backend.pojo.FlyNumDO;
 import com.example.backend.pojo.RecordsDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.backend.pojo.dto.FlyNumDto;
@@ -19,5 +18,5 @@ public interface RecordsManager extends IService<RecordsDO> {
 
     float getFlightPunctualityRate(Long airlineId, Integer flightNum);
 
-    List<FlyNumDO> listFlyNum(Long airlineId, Integer flightNum);
+    List<FlyNumDto> listFlyNum(Long airlineId, Integer flightNum);
 }
