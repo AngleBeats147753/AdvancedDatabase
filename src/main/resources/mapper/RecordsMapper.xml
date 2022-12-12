@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.backend.dao.RecordsDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.backend.pojo.RecordsDO">
+        <result column="id" property="id" />
+        <result column="flight_date" property="flightDate" />
+        <result column="flight_number_operating_airline" property="flightNumberOperatingAirline" />
+        <result column="origin_airport_id" property="originAirportId" />
+        <result column="airline_id" property="airlineId" />
+        <result column="dest_airport_id" property="destAirportId" />
+        <result column="cancelled" property="cancelled" />
+        <result column="CRSDepTime" property="cRSDepTime" />
+        <result column="DepTime" property="depTime" />
+        <result column="DepDelay" property="depDelay" />
+        <result column="ArrTime" property="arrTime" />
+        <result column="CRSArrTime" property="cRSArrTime" />
+        <result column="ArrDelay" property="arrDelay" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, flight_date, flight_number_operating_airline, origin_airport_id, airline_id, dest_airport_id, cancelled, CRSDepTime, DepTime, DepDelay, ArrTime, CRSArrTime, ArrDelay
+    </sql>
+
+</mapper>
