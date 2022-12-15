@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.backend.manager.*;
 import com.example.backend.pojo.*;
 import com.example.backend.pojo.dto.PageDTO;
+import com.example.backend.pojo.dto.RecordDto;
 import com.example.backend.pojo.dto.ReturnResult;
 import com.example.backend.pojo.query.GetFlightRecordsQuery;
 import lombok.extern.slf4j.Slf4j;
@@ -57,8 +58,37 @@ public class RecordsService {
                 .in(depAirportList != null, RecordsDO.ORIGIN_AIRPORT_ID, depAirportList)
                 .in(arrAirportList != null, RecordsDO.DEST_AIRPORT_ID, arrAirportList)
         );
+        List<RecordDto> recordDtoList = page.getRecords().stream().map((e) -> {
+            RecordDto dto = new RecordDto();
+            dto.setFlightNum(e.getFlightNumberOperatingAirline());
+            AirlineDO airlineDO = airlineManager.getById(e.getAirlineId());
+            dto.setAirline(airlineDO.getAirline());
+            dto.setFlightDate(e.getFlightDate());
+            dto.setDepTime(e.getDepTime());
+            dto.setArrTime(e.getArrTime());
+            dto.setCanceled(e.getCancelled() > 0);
 
-        return ReturnResult.getSuccessReturn(page);
+            List<AirportDO> airportDOList = airportManager.listByIds(List.of(e.getOriginAirportId(), e.getDestAirportId()));
+            AirportDO originAirport = airportDOList.get(0);
+            dto.setOriginAirport(originAirport.getAirportCode());
+            AirportDO destAirport = airportDOList.get(1);
+            dto.setDestAirport(destAirport.getAirportCode());
+
+            List<CityDO> cityDOList = cityManager.listByIds(airportDOList.stream().map(AirportDO::getCityId).collect(Collectors.toList()));
+            CityDO originCity = cityDOList.get(0);
+            dto.setDepCity(originCity.getCityName());
+            CityDO destCity = cityDOList.get(1);
+            dto.setArrCity(destCity.getCityName());
+
+            List<StateDO> stateDOList = stateManager.listByIds(cityDOList.stream().map(CityDO::getId).collect(Collectors.toList()));
+            StateDO originState = stateDOList.get(0);
+            dto.setDepState(originState.getStateName());
+            StateDO destState = stateDOList.get(1);
+            dto.setArrState(destState.getStateName());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ReturnResult.getSuccessReturn(new PageDTO<>(page.getSize(), page.getTotal(), recordDtoList));
     }
 
     public ReturnResult getPunctuality(String flightNum) {
